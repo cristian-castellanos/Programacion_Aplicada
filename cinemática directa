@@ -1,0 +1,33 @@
+from machine import Pin, I2C
+import ssd1306
+import math
+
+# Configuración de la pantalla OLED
+i2c = I2C(0, scl=Pin(22), sda=Pin(21)) 
+oled = ssd1306.SSD1306_I2C(128, 64, i2c)
+
+L1 = 30  
+L2 = 20  
+
+theta1 = 45  
+theta2 = 30  
+
+theta1_rad = math.radians(theta1)
+theta2_rad = math.radians(theta2)
+
+x1 = L1 * math.cos(theta1_rad)
+y1 = L1 * math.sin(theta1_rad)
+
+x2 = x1 + L2 * math.cos(theta1_rad + theta2_rad)
+y2 = y1 + L2 * math.sin(theta1_rad + theta2_rad)
+
+oled.fill(0)
+
+oled.line(64, 32, int(64 + x1), int(32 - y1), 1)  # (64, 32) es el punto de origen en el centro
+
+oled.line(int(64 + x1), int(32 - y1), int(64 + x2), int(32 - y2), 1)
+
+oled.show()
+
+print("Coordenadas del extremo del primer eslabón: ({:.2f}, {:.2f})".format(x1, y1))
+print("Coordenadas del extremo del segundo eslabón: ({:.2f}, {:.2f})".format(x2, y2))
